@@ -1,3 +1,6 @@
+import random
+
+
 class TravelingSalesperson:
     def __init__(self, population_size, generations, mutation_rate, init_population, cities):
         self.mutation_rate, self.generations = mutation_rate, generations
@@ -12,8 +15,27 @@ class TravelingSalesperson:
             self.distances = [distance.split(';')[:len(self.cities)] for distance in infile.readlines()]
         infile.close()
 
+        self.population = self.init_population(init_population)
+
     def init_population(self, population_size):
-        pass
+        random.shuffle(self.cities)  # random route
+        routes = [Route(self.cities.copy(), self.cities_keys, self.distances)]
+        self.best_route = routes[0]
+
+        for i in range(1, population_size):
+            while True:
+                random.shuffle(self.cities)  # random route
+                route = Route(self.cities.copy(), self.cities_keys, self.distances)  # creating instance route
+
+                if route not in routes:
+                    break
+
+            routes.append(route)
+
+            if route.distance < self.best_route.distance:
+                self.best_route = route
+
+        return routes
 
     def selection(self):
         pass
