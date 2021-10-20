@@ -92,7 +92,19 @@ class TravelingSalesperson:
         return children
 
     def mutate_population(self, population):
-        pass
+        numbers = [i for i in range(0, len(self.cities))]
+        for route in population:
+            odds = random.random()
+            if odds < self.mutation_rate:  # random switch places on 2 cities
+                city1 = random.choice(numbers)
+                city2 = random.choice(numbers)
+
+                while city1 == city2:
+                    city2 = random.choice(numbers)
+
+                route[city1], route[city2] = route[city2], route[city1]
+
+        return population
 
     def next_generation(self):
         pass
