@@ -26,3 +26,18 @@ class TravelingSalesperson:
 
     def next_generation(self):
         pass
+
+
+class Route:
+    def __init__(self, cities, cities_keys, distances):
+        self.route = cities
+        self.distance = self.calculate_distance(cities_keys, distances)
+        self.fitness = 1 / self.distance
+
+    def calculate_distance(self, cities_keys, distances):
+        length = 0
+        for i in range(1, len(self.route)):
+            length += float(distances[cities_keys[self.route[i - 1]]][cities_keys[self.route[i]]])
+        length += float(distances[cities_keys[self.route[-1]]][cities_keys[self.route[0]]])
+
+        return length
