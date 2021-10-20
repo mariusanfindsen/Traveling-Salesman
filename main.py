@@ -137,6 +137,12 @@ class Route:
 
         return length
 
+    def __str__(self):
+        route = self.route.copy()
+        route.append(self.route[0])
+        return f'Route: {route} \n Distance: {self.distance}, Fitness: {self.fitness}'
+
+
 if __name__ == "__main__":
     tsp = TravelingSalesperson(population_size=50, mutation_rate=0.1, cities=10)
     tsp.init_population(100)
