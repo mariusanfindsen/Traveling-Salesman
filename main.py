@@ -2,9 +2,9 @@ import random
 
 
 class TravelingSalesperson:
-    def __init__(self, population_size, generations, mutation_rate, init_population, cities):
-        self.mutation_rate, self.generations = mutation_rate, generations
-        self.population_size, self.best_route, self.init_population = population_size, None, init_population
+    def __init__(self, population_size, mutation_rate, cities):
+        self.mutation_rate, self.population_size = mutation_rate, population_size
+        self.population, self.best_route = None, None
 
         with open('european_cities.csv') as infile:  # Open's CSV file with data
             # Create´s a list of the cities
@@ -14,8 +14,6 @@ class TravelingSalesperson:
             # Storing the distances between the cities
             self.distances = [distance.split(';')[:len(self.cities)] for distance in infile.readlines()]
         infile.close()
-
-        self.population = self.init_population(init_population)
 
     def init_population(self, population_size):
         random.shuffle(self.cities)  # random route
@@ -107,7 +105,21 @@ class TravelingSalesperson:
         return population
 
     def next_generation(self):
-        pass
+        breeding_pool = self.selection()
+        new_generation = self.mutate_population(self.breed_population(breeding_pool))
+        new_population = []
+
+        for route in new_generation:
+            route = Route(route, self.cities_keys, self.distances)
+            new_population.append(route)
+            if route.distance < self.best_route.distance:
+                self.best_route = route
+
+        return new_population
+
+    def evolve(self, generations):
+        for i in range(0, generations):
+            self.population = self.next_generation()
 
 
 class Route:
@@ -124,3 +136,9 @@ class Route:
         length += float(distances[cities_keys[self.route[-1]]][cities_keys[self.route[0]]])
 
         return length
+
+if __name__ == "__main__":
+    tsp = TravelingSalesperson(population_size=50, mutation_rate=0.1, cities=10)
+    tsp.init_population(100)
+    tsp.evolve(10)
+    print(tsp.best_route)
