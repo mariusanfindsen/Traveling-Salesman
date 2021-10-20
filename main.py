@@ -59,7 +59,37 @@ class TravelingSalesperson:
         return breeding_pool
 
     def breed_population(self, breeding_pool):
-        pass
+        children = []
+        numbers = [i for i in range(0, len(self.cities))]
+        breeding_pool = random.sample(breeding_pool, len(breeding_pool))
+
+        for i in range(len(breeding_pool)):
+            parent1 = breeding_pool[i]
+            parent2 = breeding_pool[len(breeding_pool) - i - 1]
+
+            if parent2.fitness > parent1.fitness:  # setting highest fitness parent to parent1
+                parent1, parent2 = parent2, parent1
+
+            start = random.choice(numbers)
+            end = random.choice(numbers)
+
+            if start > end:
+                start, end = end, start
+
+            if end - start < len(self.cities) / 2:  # Switches parent so that highest parent have the most effect
+                parent1, parent2 = parent2, parent1
+
+            child = parent1.route[start:end]
+            for city in parent2.route:
+                if city not in child:
+                    child.append(city)
+
+                if len(child) == len(parent2.route):
+                    break
+
+            children.append(child)
+
+        return children
 
     def mutate_population(self, population):
         pass
