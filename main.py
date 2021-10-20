@@ -33,7 +33,7 @@ class TravelingSalesperson:
             if route.distance < self.best_route.distance:
                 self.best_route = route
 
-        return routes
+        self.population = routes
 
     def selection(self):
         selection_pool = sorted(self.population, key=lambda route: route.fitness, reverse=False)
