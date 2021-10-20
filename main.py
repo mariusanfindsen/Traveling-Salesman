@@ -38,7 +38,25 @@ class TravelingSalesperson:
         return routes
 
     def selection(self):
-        pass
+        selection_pool = sorted(self.population, key=lambda route: route.fitness, reverse=False)
+        total = sum(route.fitness for route in selection_pool)
+
+        selection_pool[0].proportion = selection_pool[0].fitness / total
+        for i in range(1, len(selection_pool)):
+            selection_pool[i].proportion = (selection_pool[i].fitness / total) + selection_pool[i - 1].proportion
+
+        breeding_pool = []
+        while len(breeding_pool) <= self.population_size:
+            choice = random.random()
+            if choice < selection_pool[1].proportion and selection_pool[0] not in breeding_pool:
+                breeding_pool.append(selection_pool[0])
+            else:
+                for i in range(1, len(selection_pool)):
+                    if selection_pool[i - 1].proportion <= choice and selection_pool[i] not in breeding_pool:
+                        breeding_pool.append(selection_pool[i])
+                        break
+
+        return breeding_pool
 
     def breed_population(self, breeding_pool):
         pass
@@ -55,6 +73,7 @@ class Route:
         self.route = cities
         self.distance = self.calculate_distance(cities_keys, distances)
         self.fitness = 1 / self.distance
+        self.proportion = None
 
     def calculate_distance(self, cities_keys, distances):
         length = 0
